@@ -2,11 +2,13 @@ import React from "react";
 import { createStackNavigator } from "@react-navigation/stack";
 import FeedScreen from "./FeedScreen/FeedScreen.main";
 import DetailScreen from "./DetailScreen/DetailScreen.main";
+import CommentsScreen from "./CommentsScreen/CommentsScreen.main";
 import { SocialModel } from "../../../models/social";
 
 export type MainStackParamList = {
   FeedScreen: undefined;
   DetailScreen: { social: SocialModel };
+  CommentsScreen: { social: SocialModel };
   NewSocialScreen: undefined;
 };
 
@@ -24,6 +26,11 @@ export function MainStackScreen() {
         name="DetailScreen"
         options={{ headerShown: false }}
         component={DetailScreen}
+      />
+      <MainStack.Screen
+        name="CommentsScreen"
+        options={{ headerShown: false }}
+        component={CommentsScreen}
       />
     </MainStack.Navigator>
   );
