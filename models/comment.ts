@@ -1,6 +1,5 @@
 export interface CommentModel {
   id?: string;
-  commentDate: number;
   commentContent: string;
   socialid: string;
   owner: string;

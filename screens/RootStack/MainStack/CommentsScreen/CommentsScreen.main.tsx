@@ -3,7 +3,7 @@ import { StackNavigationProp } from "@react-navigation/stack";
 import React, { useState, useEffect } from "react";
 import firebase from "firebase/app";
 import "firebase/firestore";
-import { ScrollView, Image, Text, View, FlatList} from "react-native";
+import { ScrollView, Image, Text, View, FlatList } from "react-native";
 import { Appbar, Button, Card } from "react-native-paper";
 import { MainStackParamList } from "../MainStackScreen";
 import { styles } from "./CommentsScreen.styles";
@@ -24,17 +24,15 @@ export default function CommentsScreen({ route, navigation }: Props) {
     const db = firebase.firestore();
     const unsubscribe = db
       .collection("comments")
-      .orderBy("commentDate", "asc")
+      .orderBy("commentContent", "asc")
       .onSnapshot((querySnapshot) => {
         var newComments: CommentModel[] = [];
         querySnapshot.forEach((comment) => {
-          
           const newComment = comment.data() as CommentModel;
           if (newComment.socialid === social.id) {
             newComment.id = comment.id;
             newComments.push(newComment);
           }
-          
         });
         setComments(newComments);
       });
@@ -44,10 +42,20 @@ export default function CommentsScreen({ route, navigation }: Props) {
   const Bar = () => {
     return (
       <Appbar.Header>
-        <Appbar.BackAction onPress={() => navigation.navigate("DetailScreen", {
-        social: social,
-      })} />
+        <Appbar.BackAction
+          onPress={() =>
+            navigation.navigate("DetailScreen", {
+              social: social,
+            })
+          }
+        />
         <Appbar.Content title="Comments" />
+        <Appbar.Action
+          icon="plus"
+          onPress={() => {
+            navigation.navigate("NewCommentScreen", { social: social });
+          }}
+        />
       </Appbar.Header>
     );
   };
@@ -101,12 +109,7 @@ export default function CommentsScreen({ route, navigation }: Props) {
 
     return (
       <Card style={{ margin: 16 }}>
-        <Card.Title
-          title={item.commentContent}
-          subtitle={
-            new Date(item.commentDate).toLocaleString()
-          }
-        />
+        <Card.Title title={item.commentContent} />
         <Card.Actions>
           <Button onPress={() => toggleInterested(item)}>
             {item.interested && item.interested[currentUserId]
@@ -122,8 +125,6 @@ export default function CommentsScreen({ route, navigation }: Props) {
       </Card>
     );
   };
-
-
 
   return (
     <>

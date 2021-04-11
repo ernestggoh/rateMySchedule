@@ -25,12 +25,11 @@ interface Props {
 export default function NewSocialScreen({ navigation }: Props) {
   // Event details.
   const [eventName, setEventName] = useState("");
-  const [eventDate, setEventDate] = useState<Date>();
-  const [eventLocation, setEventLocation] = useState("");
+  const [units, setUnits] = useState("");
   const [eventDescription, setEventDescription] = useState("");
   const [eventImage, setEventImage] = useState<string | undefined>(undefined);
-  // Date picker.
-  const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
+  const [major, setMajor] = useState("");
+  const [commitments, setCommitments] = useState("");
   const [visible, setVisible] = useState(false);
   // Snackbar.
   const [message, setMessage] = useState("");
@@ -66,23 +65,6 @@ export default function NewSocialScreen({ navigation }: Props) {
     }
   };
 
-  // Code for DatePicker (from docs)
-  const showDatePicker = () => {
-    setDatePickerVisibility(true);
-  };
-
-  // Code for DatePicker (from docs)
-  const hideDatePicker = () => {
-    setDatePickerVisibility(false);
-  };
-
-  // Code for DatePicker (from docs)
-  const handleConfirm = (date: Date) => {
-    date.setSeconds(0);
-    setEventDate(date);
-    hideDatePicker();
-  };
-
   // Code for SnackBar (from docs)
   const onDismissSnackBar = () => setVisible(false);
   const showError = (error: string) => {
@@ -95,11 +77,11 @@ export default function NewSocialScreen({ navigation }: Props) {
     if (!eventName) {
       showError("Please enter an event name.");
       return;
-    } else if (!eventDate) {
-      showError("Please choose an event date.");
+    } else if (!units) {
+      showError("Please enter the number of units.");
       return;
-    } else if (!eventLocation) {
-      showError("Please enter an event location.");
+    } else if (!major) {
+      showError("Please enter a major.");
       return;
     } else if (!eventDescription) {
       showError("Please enter an event description.");
@@ -128,8 +110,9 @@ export default function NewSocialScreen({ navigation }: Props) {
       const downloadURL = await result.ref.getDownloadURL();
       const doc: SocialModel = {
         eventName: eventName,
-        eventDate: eventDate.getTime(),
-        eventLocation: eventLocation,
+        units: units,
+        major: major,
+        commitments: commitments,
         eventDescription: eventDescription,
         eventImage: downloadURL,
         owner: firebase.auth().currentUser!.uid,
@@ -149,7 +132,7 @@ export default function NewSocialScreen({ navigation }: Props) {
     return (
       <Appbar.Header>
         <Appbar.Action onPress={navigation.goBack} icon="close" />
-        <Appbar.Content title="Socials" />
+        <Appbar.Content title="Schedule Rater" />
       </Appbar.Header>
     );
   };
@@ -159,32 +142,37 @@ export default function NewSocialScreen({ navigation }: Props) {
       <Bar />
       <View style={{ ...styles.container, padding: 20 }}>
         <TextInput
-          label="Event Name"
+          label="Schedule Name"
           value={eventName}
           onChangeText={(name) => setEventName(name)}
           style={{ backgroundColor: "white", marginBottom: 10 }}
         />
         <TextInput
-          label="Event Location"
-          value={eventLocation}
-          onChangeText={(location) => setEventLocation(location)}
-          style={{ backgroundColor: "white", marginBottom: 10 }}
-        />
-        <TextInput
-          label="Event Description"
+          label="Schedule Description"
           value={eventDescription}
           multiline={true}
           onChangeText={(desc) => setEventDescription(desc)}
           style={{ backgroundColor: "white", marginBottom: 10 }}
         />
-        <Button
-          mode="outlined"
-          onPress={showDatePicker}
-          style={{ marginTop: 20 }}
-        >
-          {eventDate ? eventDate.toLocaleString() : "Choose a Date"}
-        </Button>
-
+        <TextInput
+          label="Major"
+          value={major}
+          onChangeText={(major) => setMajor(major)}
+          style={{ backgroundColor: "white", marginBottom: 10 }}
+        />
+        <TextInput
+          label="Units"
+          keyboardType="numeric"
+          value={units}
+          onChangeText={(text) => setUnits(text)}
+          style={{ backgroundColor: "white", marginBottom: 10 }}
+        />
+        <TextInput
+          label="Other Commitments"
+          value={commitments}
+          onChangeText={(text) => setCommitments(text)}
+          style={{ backgroundColor: "white", marginBottom: 10 }}
+        />
         <Button mode="outlined" onPress={pickImage} style={{ marginTop: 20 }}>
           {eventImage ? "Change Image" : "Pick an Image"}
         </Button>
@@ -196,12 +184,6 @@ export default function NewSocialScreen({ navigation }: Props) {
         >
           Save Event
         </Button>
-        <DateTimePickerModal
-          isVisible={isDatePickerVisible}
-          mode="datetime"
-          onConfirm={handleConfirm}
-          onCancel={hideDatePicker}
-        />
         <Snackbar
           duration={3000}
           visible={visible}

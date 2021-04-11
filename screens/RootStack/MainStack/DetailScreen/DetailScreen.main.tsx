@@ -18,7 +18,7 @@ export default function DetailScreen({ route, navigation }: Props) {
     return (
       <Appbar.Header>
         <Appbar.BackAction onPress={() => navigation.navigate("FeedScreen")} />
-        <Appbar.Content title="Socials" />
+        <Appbar.Content title="Schedule Rater" />
       </Appbar.Header>
     );
   };
@@ -33,17 +33,24 @@ export default function DetailScreen({ route, navigation }: Props) {
             {social.eventName}
           </Text>
           <Text style={{ ...styles.subtitle, marginBottom: 5 }}>
-            {social.eventLocation}
+            {"Major: " + social.major}
           </Text>
           <Text style={{ ...styles.subtitle, marginTop: 5, marginBottom: 20 }}>
-            {new Date(social.eventDate).toLocaleString()}
+            {"Description: " + social.eventDescription}
           </Text>
-          <Button color="blue" onPress={() => navigation.navigate("CommentsScreen", {
-            social: social,
-          })}>
-              {"Comments"}
-            </Button>
-          <Text style={styles.body}>{social.eventDescription}</Text>
+          <Text style={{ ...styles.subtitle, marginTop: 0, marginBottom: 20 }}>
+            {"Commitments: " + social.commitments}
+          </Text>
+          <Button
+            color="blue"
+            onPress={() =>
+              navigation.navigate("CommentsScreen", {
+                social: social,
+              })
+            }
+          >
+            {"Comments"}
+          </Button>
         </View>
       </ScrollView>
     </>

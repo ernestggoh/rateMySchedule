@@ -9,6 +9,7 @@ export type MainStackParamList = {
   FeedScreen: undefined;
   DetailScreen: { social: SocialModel };
   CommentsScreen: { social: SocialModel };
+  NewCommentScreen: { social: SocialModel };
   NewSocialScreen: undefined;
 };
 

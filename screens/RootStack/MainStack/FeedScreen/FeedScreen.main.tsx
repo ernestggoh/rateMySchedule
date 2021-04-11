@@ -33,7 +33,7 @@ export default function FeedScreen({ navigation }: Props) {
     const db = firebase.firestore();
     const unsubscribe = db
       .collection("socials")
-      .orderBy("eventDate", "asc")
+      .orderBy("eventName", "asc")
       .onSnapshot((querySnapshot) => {
         var newSocials: SocialModel[] = [];
         querySnapshot.forEach((social) => {
@@ -86,11 +86,7 @@ export default function FeedScreen({ navigation }: Props) {
         <Card.Cover source={{ uri: item.eventImage }} />
         <Card.Title
           title={item.eventName}
-          subtitle={
-            item.eventLocation +
-            " • " +
-            new Date(item.eventDate).toLocaleString()
-          }
+          subtitle={item.major + " • " + item.units + " Units"}
         />
         <Card.Actions>
           <Button onPress={() => toggleInterested(item)}>
@@ -115,7 +111,7 @@ export default function FeedScreen({ navigation }: Props) {
           icon="exit-to-app"
           onPress={() => firebase.auth().signOut()}
         />
-        <Appbar.Content title="Socials" />
+        <Appbar.Content title="Schedule Rater" />
         <Appbar.Action
           icon="plus"
           onPress={() => {

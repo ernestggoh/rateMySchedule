@@ -1,10 +1,12 @@
 export interface SocialModel {
   id?: string;
-  eventDate: number;
+
+  eventName: string;
   eventDescription: string;
   eventImage: string;
-  eventLocation: string;
-  eventName: string;
+  units: string;
+  major: string;
+  commitments: string;
   owner: string;
   interested?: {
     [key: string]: boolean;
