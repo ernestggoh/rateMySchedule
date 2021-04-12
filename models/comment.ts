@@ -6,10 +6,7 @@ export interface CommentModel {
   interested?: {
     [key: string]: boolean;
   };
-  upvote?: {
-    [key: string]: boolean;
-  };
-  downvote?: {
-    [key: string]: boolean;
-  };
+  upvote: number;
+
+  
 }

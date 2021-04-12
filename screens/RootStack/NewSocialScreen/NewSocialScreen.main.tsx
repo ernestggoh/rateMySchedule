@@ -17,7 +17,7 @@ import "firebase/firestore";
 import { SocialModel } from "../../../models/social";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamList } from "../RootStackScreen";
-
+import * as WebBrowser from "expo-web-browser";
 interface Props {
   navigation: StackNavigationProp<RootStackParamList, "NewSocialScreen">;
 }
@@ -35,7 +35,14 @@ export default function NewSocialScreen({ navigation }: Props) {
   const [message, setMessage] = useState("");
   // Loading state for submit button
   const [loading, setLoading] = useState(false);
+  const [link, setLink] = useState<any | null>(null);
 
+  const handlePressButtonAsync = async () => {
+    let result = await WebBrowser.openBrowserAsync(
+      "https://calcentral.berkeley.edu/dashboard"
+    );
+    setLink(result);
+  };
   // Code for ImagePicker (from docs)
   useEffect(() => {
     (async () => {
@@ -173,6 +180,7 @@ export default function NewSocialScreen({ navigation }: Props) {
           onChangeText={(text) => setCommitments(text)}
           style={{ backgroundColor: "white", marginBottom: 10 }}
         />
+        <Button onPress={handlePressButtonAsync}>Open WebBrowser</Button>
         <Button mode="outlined" onPress={pickImage} style={{ marginTop: 20 }}>
           {eventImage ? "Change Image" : "Pick an Image"}
         </Button>

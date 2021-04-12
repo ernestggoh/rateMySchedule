@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import firebase from "firebase/app";
 import "firebase/firestore";
 import { ScrollView, Image, Text, View, FlatList } from "react-native";
-import { Appbar, Button, Card } from "react-native-paper";
+import { Appbar, Button, Card, IconButton } from "react-native-paper";
 import { MainStackParamList } from "../MainStackScreen";
 import { styles } from "./CommentsScreen.styles";
 import { CommentModel } from "../../../../models/comment.js";
@@ -66,7 +66,9 @@ export default function CommentsScreen({ route, navigation }: Props) {
     }
     if (comment.interested[currentUserId]) {
       comment.interested[currentUserId] = false;
+      comment.upvote -= 1;
     } else {
+      comment.upvote += 1;
       comment.interested[currentUserId] = true;
     }
 
@@ -109,7 +111,15 @@ export default function CommentsScreen({ route, navigation }: Props) {
 
     return (
       <Card style={{ margin: 16 }}>
-        <Card.Title title={item.commentContent} />
+        <Card.Title
+          title={item.commentContent}
+          right={(props) => (
+            <Text style={{ color: "blue", fontSize: 15 }}>
+              {item.upvote + " likes"}
+            </Text>
+          )}
+        />
+
         <Card.Actions>
           <Button onPress={() => toggleInterested(item)}>
             {item.interested && item.interested[currentUserId]
