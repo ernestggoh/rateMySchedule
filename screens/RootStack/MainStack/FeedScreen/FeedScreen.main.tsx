@@ -70,6 +70,75 @@ export default function FeedScreen({ navigation }: Props) {
       });
   };
 
+  const toggleUpvote = (social: SocialModel) => {
+    if (!social.upvote) {
+      social.upvote = {};
+    }
+    if (!social.downvote) {
+      social.downvote = {};
+    }
+
+    if (social.upvote[currentUserId]) {
+      social.upvote[currentUserId] = false;
+      social.upvotes -= 1;
+    } else {
+      if (social.downvote[currentUserId]) {
+        social.upvotes += 2;
+      } else {
+        social.upvotes += 1;
+      }
+      social.upvote[currentUserId] = true;
+      social.downvote[currentUserId] = false;
+    }
+
+    firebase
+      .firestore()
+      .collection("socials")
+      .doc(social.id)
+      .set({
+        ...social,
+        id: null,
+      })
+      .then(() => {})
+      .catch((error) => {
+        console.log("Error writing node:", error);
+      });
+  }
+  const toggleDownvote = (social: SocialModel) => {
+    if (!social.downvote) {
+      social.downvote = {};
+    }
+    if (!social.upvote) {
+      social.upvote = {};
+    }
+
+    if (social.downvote[currentUserId]) {
+      social.downvote[currentUserId] = false;
+      social.upvotes += 1;
+    } else {
+      if (social.upvote[currentUserId]) {
+        social.upvotes -= 2;
+      } else {
+        social.upvotes -= 1;
+      }
+      social.downvote[currentUserId] = true;
+      social.upvote[currentUserId] = false;
+    }
+
+    firebase
+      .firestore()
+      .collection("socials")
+      .doc(social.id)
+      .set({
+        ...social,
+        id: null,
+      })
+      .then(() => {})
+      .catch((error) => {
+        console.log("Error writing node:", error);
+      });
+  }
+
   const deleteSocial = (social: SocialModel) => {
     firebase.firestore().collection("socials").doc(social.id).delete();
   };
@@ -89,10 +158,18 @@ export default function FeedScreen({ navigation }: Props) {
           subtitle={item.major + " • " + item.units + " Units"}
         />
         <Card.Actions>
-          <Button onPress={() => toggleInterested(item)}>
-            {item.interested && item.interested[currentUserId]
-              ? "♥ Liked"
-              : "♡ Like"}
+          <Button onPress={() => toggleUpvote(item)}>
+            {item.upvote && item.upvote[currentUserId]
+              ? "⬆"
+              : "⇧"}
+          </Button>
+          <Button>
+            {item.upvotes}
+          </Button>
+          <Button onPress={() => toggleDownvote(item)}>
+            {item.downvote && item.downvote[currentUserId]
+              ? "⬇"
+              : "⇩"}
           </Button>
           {item.owner === currentUserId && (
             <Button color="red" onPress={() => deleteSocial(item)}>

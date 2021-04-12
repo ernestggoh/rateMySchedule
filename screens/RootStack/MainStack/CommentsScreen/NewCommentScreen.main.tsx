@@ -50,7 +50,7 @@ export default function NewCommentScreen({ route, navigation }: Props) {
         socialid: social.id || "",
         owner: firebase.auth().currentUser!.uid,
         interested: {},
-        upvote: 0,
+        upvotes: 0,
       };
       console.log("setting download url");
       await socialRef.set(doc);

@@ -41,6 +41,9 @@ export default function DetailScreen({ route, navigation }: Props) {
           <Text style={{ ...styles.subtitle, marginTop: 0, marginBottom: 20 }}>
             {"Commitments: " + social.commitments}
           </Text>
+          <Text style={{ ...styles.subtitle, marginTop: 0, marginBottom: 20 }}>
+            {"Upvotes: " + social.upvotes}
+          </Text>
           <Button
             color="blue"
             onPress={() =>

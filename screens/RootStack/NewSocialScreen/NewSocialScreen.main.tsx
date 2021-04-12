@@ -124,6 +124,7 @@ export default function NewSocialScreen({ navigation }: Props) {
         eventImage: downloadURL,
         owner: firebase.auth().currentUser!.uid,
         interested: {},
+        upvotes: 0,
       };
       console.log("setting download url");
       await socialRef.set(doc);

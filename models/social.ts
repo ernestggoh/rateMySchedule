@@ -11,4 +11,11 @@ export interface SocialModel {
   interested?: {
     [key: string]: boolean;
   };
+  upvote?: {
+    [key: string]: boolean;
+  };
+  downvote?: {
+    [key: string]: boolean;
+  };
+  upvotes: number;
 }

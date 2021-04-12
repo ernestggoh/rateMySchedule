@@ -60,16 +60,50 @@ export default function CommentsScreen({ route, navigation }: Props) {
     );
   };
 
-  const toggleInterested = (comment: CommentModel) => {
-    if (!comment.interested) {
-      comment.interested = {};
+  // const toggleInterested = (comment: CommentModel) => {
+  //   if (!comment.interested) {
+  //     comment.interested = {};
+  //   }
+  //   if (comment.interested[currentUserId]) {
+  //     comment.interested[currentUserId] = false;
+  //     comment.upvote -= 1;
+  //   } else {
+  //     comment.upvote += 1;
+  //     comment.interested[currentUserId] = true;
+  //   }
+
+  //   firebase
+  //     .firestore()
+  //     .collection("comments")
+  //     .doc(comment.id)
+  //     .set({
+  //       ...comment,
+  //       id: null,
+  //     })
+  //     .then(() => {})
+  //     .catch((error) => {
+  //       console.log("Error writing node:", error);
+  //     });
+  // };
+  const toggleUpvote = (comment: CommentModel) => {
+    if (!comment.upvote) {
+      comment.upvote = {};
     }
-    if (comment.interested[currentUserId]) {
-      comment.interested[currentUserId] = false;
-      comment.upvote -= 1;
+    if (!comment.downvote) {
+      comment.downvote = {};
+    }
+
+    if (comment.upvote[currentUserId]) {
+      comment.upvote[currentUserId] = false;
+      comment.upvotes -= 1;
     } else {
-      comment.upvote += 1;
-      comment.interested[currentUserId] = true;
+      if (comment.downvote[currentUserId]) {
+        comment.upvotes += 2;
+      } else {
+        comment.upvotes += 1;
+      }
+      comment.upvote[currentUserId] = true;
+      comment.downvote[currentUserId] = false;
     }
 
     firebase
@@ -84,7 +118,41 @@ export default function CommentsScreen({ route, navigation }: Props) {
       .catch((error) => {
         console.log("Error writing node:", error);
       });
-  };
+  }
+  const toggleDownvote = (comment: CommentModel) => {
+    if (!comment.downvote) {
+      comment.downvote = {};
+    }
+    if (!comment.upvote) {
+      comment.upvote = {};
+    }
+
+    if (comment.downvote[currentUserId]) {
+      comment.downvote[currentUserId] = false;
+      comment.upvotes += 1;
+    } else {
+      if (comment.upvote[currentUserId]) {
+        comment.upvotes -= 2;
+      } else {
+        comment.upvotes -= 1;
+      }
+      comment.downvote[currentUserId] = true;
+      comment.upvote[currentUserId] = false;
+    }
+
+    firebase
+      .firestore()
+      .collection("comments")
+      .doc(comment.id)
+      .set({
+        ...comment,
+        id: null,
+      })
+      .then(() => {})
+      .catch((error) => {
+        console.log("Error writing node:", error);
+      });
+  }
 
   const deleteComment = (comment: CommentModel) => {
     firebase.firestore().collection("comments").doc(comment.id).delete();
@@ -113,18 +181,26 @@ export default function CommentsScreen({ route, navigation }: Props) {
       <Card style={{ margin: 16 }}>
         <Card.Title
           title={item.commentContent}
-          right={(props) => (
-            <Text style={{ color: "blue", fontSize: 15 }}>
-              {item.upvote + " likes"}
-            </Text>
-          )}
+          // right={(props) => (
+          //   <Text style={{ color: "blue", fontSize: 15 }}>
+          //     {item.upvote + " likes"}
+          //   </Text>
+          // )}
         />
 
         <Card.Actions>
-          <Button onPress={() => toggleInterested(item)}>
-            {item.interested && item.interested[currentUserId]
-              ? "♥ Liked"
-              : "♡ Like"}
+          <Button onPress={() => toggleUpvote(item)}>
+            {item.upvote && item.upvote[currentUserId]
+              ? "⬆"
+              : "⇧"}
+          </Button>
+          <Button>
+            {item.upvotes}
+          </Button>
+          <Button onPress={() => toggleDownvote(item)}>
+            {item.downvote && item.downvote[currentUserId]
+              ? "⬇"
+              : "⇩"}
           </Button>
           {item.owner === currentUserId && (
             <Button color="red" onPress={() => deleteComment(item)}>
